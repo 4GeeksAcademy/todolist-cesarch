@@ -1,8 +1,22 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const ToDoList = () => {
+  const apiUrl = "https://playground.4geeks.com/todo/users/cesarch";
+
   const [tasks, setTasks] = useState([]);
+
   const inputRef = useRef(null);
+
+  const onLoad = () => {
+    fetch(apiUrl)
+      .then((response) => {
+        return response.json();
+      })
+      .then((datos) => {});
+  };
+
+  useEffect(onLoad, []);
+
   const handleEnter = (e) => {
     if (e.key === "Enter") {
       const valor = inputRef.current.value;
@@ -11,6 +25,7 @@ const ToDoList = () => {
       console.log(valor);
     }
   };
+
   const handleDelete = (indexDelete) => {
     setTasks(tasks.filter((item, index) => index !== indexDelete));
   };
