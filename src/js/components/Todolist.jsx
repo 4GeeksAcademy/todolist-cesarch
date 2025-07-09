@@ -12,22 +12,52 @@ const ToDoList = () => {
       .then((response) => {
         return response.json();
       })
-      .then((datos) => {});
+      .then((datos) => {
+        setTasks(datos.todos);
+      });
   };
-
-  useEffect(onLoad, []);
+  useEffect(() => {
+    onLoad();
+  }, []);
 
   const handleEnter = (e) => {
     if (e.key === "Enter") {
-      const valor = inputRef.current.value;
-      let list = setTasks([...tasks, valor]);
-      inputRef.current.value = "";
-      console.log(valor);
+      const valor = inputRef.current.value.trim();
+
+      fetch(`https://playground.4geeks.com/todo/todos/cesarch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          label: valor,
+          is_done: false,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            onLoad();
+            inputRef.current.value = "";
+          } else {
+            console.error("Error al guardar tarea");
+          }
+        })
+        .catch((error) => console.error("Error al guardar tarea", error));
     }
   };
 
-  const handleDelete = (indexDelete) => {
-    setTasks(tasks.filter((item, index) => index !== indexDelete));
+  const handleDelete = (id) => {
+    fetch(`https://playground.4geeks.com/todo/todos/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          setTasks(tasks.filter((task) => task.id !== id));
+        } else {
+          console.error("Error al eliminar en API");
+        }
+      })
+      .catch((error) => console.error("Error al eliminar", error));
   };
 
   return (
@@ -56,10 +86,10 @@ const ToDoList = () => {
               key={index}
               className="list-group-item d-flex justify-content-between align-items-center ps-4"
             >
-              {item}
+              {item.label}
               <button
                 className="btn btn-sm"
-                onClick={() => handleDelete(index)}
+                onClick={() => handleDelete(item.id)}
               >
                 ❌
               </button>
