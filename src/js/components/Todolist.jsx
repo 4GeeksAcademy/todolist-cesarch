@@ -62,7 +62,7 @@ const ToDoList = () => {
 
   return (
     <div
-      className="d-flex,container justify-content-center flex-column align-items-center vh-100"
+      className="d-flex container justify-content-center flex-column align-items-center vh-100"
       style={{ backgroundColor: "#ffe8e3" }}
     >
       <h1
